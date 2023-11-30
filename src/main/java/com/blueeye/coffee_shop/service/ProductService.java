@@ -1,0 +1,66 @@
+package com.blueeye.coffee_shop.service;
+
+import com.blueeye.coffee_shop.converter.ProductConverter;
+import com.blueeye.coffee_shop.dto.ProductDto;
+import com.blueeye.coffee_shop.entity.ClassifyEntity;
+import com.blueeye.coffee_shop.entity.ProductEntity;
+import com.blueeye.coffee_shop.repository.ClassifyRepository;
+import com.blueeye.coffee_shop.repository.ProductRepository;
+import com.blueeye.coffee_shop.service.IService.IProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+public class ProductService implements IProductService {
+    private ProductRepository productRepository;
+    private ClassifyRepository classifyRepository;
+    private ProductConverter productConverter;
+
+    @Autowired
+    public ProductService(ProductRepository productRepository, ProductConverter productConverter, ClassifyRepository classifyRepository) {
+        this.productRepository = productRepository;
+        this.productConverter = productConverter;
+        this.classifyRepository = classifyRepository;
+    }
+
+    @Override
+    public ProductDto save(ProductDto dto) {
+        ClassifyEntity classifyEntity = classifyRepository.findById(dto.getClassifyId()).get();
+        ProductEntity productEntity = new ProductEntity();
+        if(dto.getId()!=null){
+            ProductEntity oldProduct = productRepository.findById(dto.getId()).get();
+            oldProduct.setClassify(classifyEntity);
+            productEntity = productConverter.toEntity(dto, oldProduct);
+        }else{
+            productEntity = productConverter.toEntity(dto);
+            productEntity.setClassify(classifyEntity);
+        }
+        return productConverter.toDto(productRepository.save(productEntity));
+    }
+
+    @Override
+    public List<ProductDto> findAll() {
+        List<ProductDto> dtos = new ArrayList<>();
+        List<ProductEntity> entities = productRepository.findAll();
+        for(ProductEntity e : entities){
+            dtos.add(productConverter.toDto(e));
+        }
+        return dtos;
+    }
+
+    @Override
+    public ProductDto findById(Long id) {
+        return productConverter.toDto(productRepository.findById(id).get());
+    }
+
+    @Override
+    public void deleteList(Long[] ids) {
+        for(Long id : ids){
+            productRepository.deleteById(id);
+        }
+    }
+
+}

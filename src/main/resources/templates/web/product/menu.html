@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{web/layout/layoutOfWeb}">
+<head>
+    <title>Thực đơn</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <section class="ftco-section">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-6 mb-5 pb-3" th:each="classify : ${classifies}">
+                        <h3 class="mb-5 heading-pricing ftco-animate" th:text="${classify.name}"></h3>
+                        <th:block th:each="product : ${products}">
+                            <th:block th:if="${product.classifyId == classify.id}">
+                                <div class="pricing-entry d-flex ftco-animate">
+<!--                                    <div class="img" th:style="background-image: url(' +@{web/images/dish-1.jpg} + ');'"></div>-->
+                                    <div class="desc pl-3">
+                                        <div class="d-flex text align-items-center">
+                                            <h3><span th:text="${product.name}"></span></h3>
+                                            <span class="price" th:text="${product.cost}"></span>
+                                        </div>
+                                        <div class="d-block">
+                                            <p th:text="${product.description}"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th:block>
+                        </th:block>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </div>
+</body>
+</html>

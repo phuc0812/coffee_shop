@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title layout:title-pattern="$CONTENT_TITLE">Admin Home</title>
+    <link th:href="@{/admin/css/styles.css}" rel="stylesheet" />
+    <script th:src="@{https://use.fontawesome.com/releases/v6.3.0/js/all.js}" crossorigin="anonymous"></script>
+    <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
+
+    <!-- sweetalert -->
+    <script th:src="@{/admin/sweetalert/sweetalert2.min.js}"></script>
+    <link th:href="@{/admin/sweetalert/sweetalert2.min.css}" rel="stylesheet"/>
+</head>
+<body class="sb-nav-fixed">
+    <!-- header -->
+    <div th:replace="admin/fragments/header::header"></div>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <!-- menu -->
+            <div th:replace="admin/fragments/menu::menu"></div>
+        </div>
+        <div id="layoutSidenav_content">
+            <div layout:fragment="content"></div>
+        </div>
+    </div>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js}" crossorigin="anonymous"></script>
+    <script th:src="@{/admin/js/scripts.js}"></script>
+</body>
+</html>

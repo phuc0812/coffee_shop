@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout/layoutOfAdmin}">
+<head>
+    <title>Danh sách sản phẩm</title>
+    <script th:inline="javascript">
+        function warningBeforeDelete(){
+            swal({
+              title: "Xác nhận xóa ?",
+              text: "Bạn có chắc muốn xóa hay không",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonClass: "btn-success",
+              cancelButtonClass: "btn-danger",
+              confirmButtonText: "Xác nhận",
+              cancelButtonText: "Hủy bỏ",
+            }).then(function(isConfirm) {
+              if (isConfirm) {
+                var ids = $('tbody input[type=checkbox]:checked').map(function () {
+                    return $(this).val();
+                }).get();
+                deleteNew(ids);
+              }
+            });
+        }
+
+        function deleteNew(data) {
+            $.ajax({
+                url: "/api/san-pham",
+                type: "DELETE",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (result) {
+                    window.location.href = "/quan-tri/san-pham/danh-sach?message=delete_success";
+                },
+                error: function (error) {
+                    window.location.href = "/quan-tri/san-pham/danh-sach?message=error_system";
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="main-content mt-3">
+            <form action="" id="formSubmit" method="get">
+                <div class="main-content-inner">
+                    <div class="page-content container">
+                        <div class="row">
+                            <div class="col-xs-12">
+<!--                                <c:if test="${not empty message}">-->
+<!--                                    <div class="alert alert-${alert}">-->
+<!--                                        ${message}-->
+<!--                                    </div>-->
+<!--                                </c:if>-->
+                                <div class="widget-box table-filter">
+                                    <div class="table-btn-controls">
+                                        <div class="pull-right tableTools-container" align="right">
+                                            <div class="dt-buttons btn-overlap btn-group">
+                                                <a flag="info"
+                                                   class="dt-button buttons-colvis btn btn-white btn-primary btn-bold" data-toggle="tooltip"
+                                                   title='Thêm sản phẩm' th:href="@{/quan-tri/san-pham/them-moi}">
+															<span>
+																<i class="fa fa-plus-circle bigger-110"></i>
+															</span>
+                                                </a>
+                                                <button id="btnDelete" type="button" onclick="warningBeforeDelete()"
+                                                        class="dt-button buttons-html5 btn btn-white btn-primary btn-bold" data-toggle="tooltip" title='Xóa sản phẩm'>
+																<span>
+																	<i class="fa fa-trash-alt bigger-110"></i>
+																</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th style="width:15%;"><input type="checkbox"> All</th>
+                                                    <th style="width:15%;">Tên sản phẩm</th>
+                                                    <th style="width:40%;">Mô tả sản phẩm</th>
+                                                    <th style="width:15%;">Giá tiền</th>
+                                                    <th style="width:15%;">Thao tác</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr th:each="product : ${products}">
+                                                        <td><input type="checkbox" id="${product.id}" th:value="${product.id}"></td>
+                                                        <td th:text="${product.name}"></td>
+                                                        <td th:text="${product.description}"></td>
+                                                        <td th:text="${product.cost}"></td>
+                                                        <td>
+                                                            <a class="btn btn-sm btn-primary btn-edit" data-toggle="tooltip" title="Chỉnh sửa" th:href="@{/quan-tri/san-pham/chinh-sua(id=${product.id})}">
+                                                                <i class="fa fa-pen-square" aria-hidden="true"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <ul class="pagination" id="pagination"></ul>
+                                            <input type="hidden" value="" id="page" name="page"/>
+                                            <input type="hidden" value="" id="limit" name="limit"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
