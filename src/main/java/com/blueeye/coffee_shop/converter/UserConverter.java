@@ -31,11 +31,21 @@ public class UserConverter{
         dto.setUsername(entity.getUsername());
         dto.setPhone(entity.getPhone());
         Collection<RoleEntity> roles = entity.getRoles();
-        List<String> roleCodes = new ArrayList<>();
+        List<String> roleNames = new ArrayList<>();
         for(RoleEntity role : roles){
-            roleCodes.add(role.getName());
+            roleNames.add(role.getName());
         }
-        dto.setRoleCode(roleCodes);
+        dto.setRoleNames(roleNames);
         return dto;
+    }
+
+    public UserEntity toEntity(UserDto dto, UserEntity oldEntity){
+        oldEntity.setName(dto.getName());
+        oldEntity.setPhone(dto.getPhone());
+        oldEntity.setEmail(dto.getEmail());
+        oldEntity.setAddress(dto.getAddress());
+        oldEntity.setUsername(dto.getUsername());
+        oldEntity.setAddress(dto.getPassword());
+        return oldEntity;
     }
 }

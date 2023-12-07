@@ -22,7 +22,7 @@
                     </th:block>
                     <th:block sec:authorize="isAuthenticated()">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" sec:authentication="principal.username"></a>
+                            <a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" sec:authentication="principal.username"><i class="fas fa-user"></i></a>
                             <div class="dropdown-menu" aria-labelledby="dropdown04">
                                 <a class="dropdown-item" th:href="@{/quan-tri/trang-chu}" sec:authorize="hasAnyRole('ROLE_ADMIN')">Quản trị</a>
                                 <form th:action="@{/logout}" method="post">

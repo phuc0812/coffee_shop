@@ -1,26 +1,35 @@
 package com.blueeye.coffee_shop.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
-public class UserDto extends AbstractDto<UserDto>{
+public class RegisterUser {
+    @NotBlank(message = "thông tin bắt buộc")
     private String name;
     private String phone;
     private String address;
-    private String avatar;
+    @NotBlank(message = "thông tin bắt buộc")
+    @Email(message = "Email không hợp lệ")
     private String email;
+    @NotBlank(message = "thông tin bắt buộc")
     private String username;
+    @NotBlank(message = "thông tin bắt buộc")
+    @Size(min = 8, message = "độ dài tối thiểu 8 kí tự")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[@#$%^&+=!])(?=\\S+$).*$",
+            message = "mật khẩu phải chứa ít nhất 1 chữ số và 1 ký tự đặc biệt")
     private String password;
     private List<String> roleNames;
-
-    public UserDto() {
+    public RegisterUser() {
     }
 
-    public UserDto(String name, String phone, String address, String avatar, String email, String username, String password, List<String> roleNames) {
+    public RegisterUser(String name, String phone, String address, String email, String username, String password, List<String> roleNames) {
         this.name = name;
         this.phone = phone;
         this.address = address;
-        this.avatar = avatar;
         this.email = email;
         this.username = username;
         this.password = password;
@@ -49,14 +58,6 @@ public class UserDto extends AbstractDto<UserDto>{
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
     }
 
     public String getEmail() {
