@@ -9,8 +9,6 @@ import java.util.List;
 public class BillEntity extends BaseEntity{
     @Column(name = "cost")
     private int cost;
-    @OneToMany(mappedBy = "bill", fetch = FetchType.LAZY)
-    private List<OrderEntity> orders;
     @ManyToOne
     @JoinColumn(name = "shop_id")
     private ShopEntity shop;
@@ -20,7 +18,6 @@ public class BillEntity extends BaseEntity{
 
     public BillEntity(int cost, List<OrderEntity> orders, ShopEntity shop) {
         this.cost = cost;
-        this.orders = orders;
         this.shop = shop;
     }
 
@@ -30,14 +27,6 @@ public class BillEntity extends BaseEntity{
 
     public void setCost(int cost) {
         this.cost = cost;
-    }
-
-    public List<OrderEntity> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<OrderEntity> orders) {
-        this.orders = orders;
     }
 
     public ShopEntity getShop() {

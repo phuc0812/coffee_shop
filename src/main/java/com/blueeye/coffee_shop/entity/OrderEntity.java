@@ -2,65 +2,44 @@ package com.blueeye.coffee_shop.entity;
 
 import jakarta.persistence.*;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "orders")
 public class OrderEntity extends BaseEntity{
-    @Column(name = "user_id")
-    private Long userId;
     @ManyToMany(mappedBy = "orders")
     private List<ProductEntity> products = new ArrayList<ProductEntity>();
-    @Column(name = "quantity")
-    private int quantity;
-    @Column(name = "cost")
-    private int cost;
+    @Column(name = "firstName")
+    private String firstName;
+    @Column(name = "lastName")
+    private String lastName;
+    @Column(name = "date")
+    private Date date;
+    @Column(name = "time")
+    private Time time;
+    @Column(name = "phone")
+    private String phone;
+    @Column(name = "message")
+    private String message;
     @ManyToOne
-    @JoinColumn(name = "bill_id")
-    private BillEntity bill;
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
 
     public OrderEntity() {
     }
 
-    public OrderEntity(Long userId, List<ProductEntity> products, int quantity, int cost, BillEntity bill) {
-        this.userId = userId;
+    public OrderEntity(List<ProductEntity> products, String firstName, String lastName, Date date, Time time, String phone, String message, UserEntity user) {
         this.products = products;
-        this.quantity = quantity;
-        this.cost = cost;
-        this.bill = bill;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public List<ProductEntity> getProduct() {
-        return products;
-    }
-
-    public void setProduct(List<ProductEntity> product) {
-        this.products = products;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public int getCost() {
-        return cost;
-    }
-
-    public void setCost(int cost) {
-        this.cost = cost;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.date = date;
+        this.time = time;
+        this.phone = phone;
+        this.message = message;
+        this.user = user;
     }
 
     public List<ProductEntity> getProducts() {
@@ -71,11 +50,59 @@ public class OrderEntity extends BaseEntity{
         this.products = products;
     }
 
-    public BillEntity getBill() {
-        return bill;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setBill(BillEntity bill) {
-        this.bill = bill;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Time getTime() {
+        return time;
+    }
+
+    public void setTime(Time time) {
+        this.time = time;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public UserEntity getUser() {
+        return user;
+    }
+
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 }

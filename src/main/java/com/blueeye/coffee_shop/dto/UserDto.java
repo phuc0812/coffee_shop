@@ -1,15 +1,28 @@
 package com.blueeye.coffee_shop.dto;
 
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 import java.util.List;
 
 public class UserDto extends AbstractDto<UserDto>{
+    @NotBlank(message = "thông tin bắt buộc")
     private String name;
     private String phone;
     private String address;
     private String avatar;
+    @NotBlank(message = "thông tin bắt buộc")
+    @Email(message = "Email không hợp lệ")
     private String email;
+    @NotBlank(message = "thông tin bắt buộc")
     private String username;
+    @NotBlank(message = "thông tin bắt buộc")
+    @Size(min = 8, message = "độ dài tối thiểu 8 kí tự")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[@#$%^&+=!])(?=\\S+$).*$",
+            message = "mật khẩu phải chứa ít nhất 1 chữ số và 1 ký tự đặc biệt")
     private String password;
     private List<String> roleNames;
 

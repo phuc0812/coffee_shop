@@ -8,5 +8,5 @@ public interface IUserService extends UserDetailsService {
     UserDto save(UserDto dto);
     UserEntity findByUsername(String username);
     UserDto findByName(String username);
-
+    UserDto findById(Long id);
 }

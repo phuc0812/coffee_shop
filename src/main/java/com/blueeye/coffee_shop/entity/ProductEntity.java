@@ -3,6 +3,7 @@ package com.blueeye.coffee_shop.entity;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -14,8 +15,9 @@ public class ProductEntity extends BaseEntity{
     private String description;
     @Column(name = "cost")
     private int cost;
-    @Column(name = "thumbnail")
-    private String thumbnail;
+    @Lob
+    @Column(name = "thumbnail", columnDefinition = "MEDIUMBLOB")
+    private byte[] thumbnail;
     @ManyToOne
     @JoinColumn(name = "classify_id")
     private ClassifyEntity classify;
@@ -24,17 +26,20 @@ public class ProductEntity extends BaseEntity{
                 joinColumns = @JoinColumn(name = "product_id"),
                 inverseJoinColumns = @JoinColumn(name = "order_id"))
     private List<OrderEntity> orders = new ArrayList<OrderEntity>();
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<CartEntity> carts = new ArrayList<>();
 
     public ProductEntity() {
     }
 
-    public ProductEntity(String name, String description, int cost, String thumbnail, ClassifyEntity classify, List<OrderEntity> orders) {
+    public ProductEntity(String name, String description, int cost, byte[] thumbnail, ClassifyEntity classify, List<OrderEntity> orders, List<CartEntity> carts) {
         this.name = name;
         this.description = description;
         this.cost = cost;
         this.thumbnail = thumbnail;
         this.classify = classify;
         this.orders = orders;
+        this.carts = carts;
     }
 
     public String getName() {
@@ -61,11 +66,11 @@ public class ProductEntity extends BaseEntity{
         this.cost = cost;
     }
 
-    public String getThumbnail() {
+    public byte[] getThumbnail() {
         return thumbnail;
     }
 
-    public void setThumbnail(String thumbnail) {
+    public void setThumbnail(byte[] thumbnail) {
         this.thumbnail = thumbnail;
     }
 
@@ -83,5 +88,13 @@ public class ProductEntity extends BaseEntity{
 
     public void setClassify(ClassifyEntity classify) {
         this.classify = classify;
+    }
+
+    public List<CartEntity> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(List<CartEntity> carts) {
+        this.carts = carts;
     }
 }

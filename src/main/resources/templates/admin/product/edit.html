@@ -9,10 +9,34 @@
             $("#add").click(function (e) {
                 e.preventDefault();
                 var data = {};
+                var id = $('#id').val();
+                var file = document.getElementById("thumbnail").files[0];
                 var formData = $("#formSubmit").serializeArray();
                 $.each(formData, function(i,v){
                     data["" + v.name + ""] = v.value;
                 });
+                if(file==null){
+                    if(id==null){
+                        add(data);
+                    }else{
+                        update(data);
+                    }
+                }else{
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => {
+                        var thumbnail = reader.result;
+                        data["thumbnail"] = thumbnail;
+                        if(id==null){
+                            add(data);
+                        }else{
+                            update(data);
+                        }
+                    };
+                }
+            });
+
+            function add(data){
                 $.ajax({
                     url: "/api/san-pham",
                     type: "POST",
@@ -26,15 +50,9 @@
                         window.location.href = "/quan-tri/san-pham/danh-sach?message=error_system";
                     }
                 });
-            });
+            }
 
-            $("#update").click(function (e) {
-                e.preventDefault();
-                var data = {};
-                var formData = $("#formSubmit").serializeArray();
-                $.each(formData, function(i,v){
-                    data["" + v.name + ""] = v.value;
-                });
+            function update(data){
                 $.ajax({
                     url: "/api/san-pham",
                     type: "PUT",
@@ -48,8 +66,9 @@
                         window.location.href = "/quan-tri/san-pham/chinh-sua?id="+result.id+"&message=error_system";
                     }
                 });
-            });
+            }
         });
+
     </script>
 </head>
 <body>
@@ -67,8 +86,8 @@
                     </div>
                     <div class="col-sm-2">
                         <select th:field="${product.classifyId}" name="classifyId" id="claasifyId" Class="form-control col-xs-10 col-sm-2">
-                            <option value="" label="---- chọn thể loại ----"/>
-                            <option th:each="classify : ${classifies}" th:value="${classify.id}" th:text="${classify.name}"/>
+                            <option value="" label="---- chọn thể loại ----"></option>
+                            <option th:each="classify : ${classifies}" th:value="${classify.id}" th:text="${classify.name}"></option>
                         </select>
                     </div>
                 </div>
@@ -86,6 +105,7 @@
                     </div>
                     <div class="col-sm-5">
                         <input type="file" class="form-control col-xs-10 col-sm-5" id="thumbnail" name="thumbnail">
+                        <span><img th:src="@{(${product.thumbnail})}" width="480px" height="270px"></span>
                     </div>
                 </div>
                 <div class="mb-3 row">
@@ -93,7 +113,7 @@
                         <label for="description" class="col-form-label" >Mô tả sản phẩm:</label>
                     </div>
                     <div class="col-sm-10">
-                        <textarea class="form-control" rows="5" name="description" id="description" th:field="*{description}"/>
+                        <textarea class="form-control" rows="5" name="description" id="description" th:field="*{description}"></textarea>
                     </div>
                 </div>
                 <div class="mb-3 row">
@@ -107,16 +127,11 @@
                 <input type="hidden" name="id" th:field="${product.id}"/>
                 <div class="">
                     <div class="ml-5 col-md-9">
-                        <span th:if="${product.id!=null}">
-                            <button class="btn btn-info" type="button" id="update" >
+                        <span>
+                            <button class="btn btn-info" type="button" id="add" >
                                 <i class="ace-icon fa fa-check bigger-110"></i>
-                                Cập nhật sản phẩm
-                            </button>
-                        </span>
-                        <span th:unless="${product.id!=null}">
-                            <button class="btn btn-info" type="button" id="add">
-                                <i class="ace-icon fa fa-check bigger-110"></i>
-                                Thêm mới sản phẩm
+                                <span th:if="${product.id!=null}">Cập nhật sản phẩm</span>
+                                <span th:unless="${product.id!=null}">Thêm mới sản phẩm</span>
                             </button>
                         </span>
 

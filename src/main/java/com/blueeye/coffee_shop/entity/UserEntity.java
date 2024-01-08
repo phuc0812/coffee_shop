@@ -15,14 +15,19 @@ public class UserEntity extends BaseEntity{
     private String phone;
     @Column(name = "address")
     private String address;
-    @Column(name = "avatar")
-    private String avatar;
+    @Lob
+    @Column(name = "avatar", columnDefinition = "MEDIUMBLOB")
+    private byte[] avatar;
     @Column(name = "email")
     private String email;
     @Column(name = "username")
     private String username;
     @Column(name = "password")
     private String password;
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<CartEntity> carts = new ArrayList<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<OrderEntity> orders = new ArrayList<>();
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role",
                 joinColumns = @JoinColumn(name = "user_id"),
@@ -32,7 +37,7 @@ public class UserEntity extends BaseEntity{
     public UserEntity() {
     }
 
-    public UserEntity(String name, String phone, String address, String avatar, String email, String username, String password) {
+    public UserEntity(String name, String phone, String address, byte[] avatar, String email, String username, String password, List<CartEntity> carts, List<OrderEntity> orders, List<RoleEntity> roles) {
         this.name = name;
         this.phone = phone;
         this.address = address;
@@ -40,6 +45,9 @@ public class UserEntity extends BaseEntity{
         this.email = email;
         this.username = username;
         this.password = password;
+        this.carts = carts;
+        this.orders = orders;
+        this.roles = roles;
     }
 
     public String getName() {
@@ -66,11 +74,11 @@ public class UserEntity extends BaseEntity{
         this.address = address;
     }
 
-    public String getAvatar() {
+    public byte[] getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(String avatar) {
+    public void setAvatar(byte[] avatar) {
         this.avatar = avatar;
     }
 
@@ -96,6 +104,22 @@ public class UserEntity extends BaseEntity{
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<CartEntity> getCarts() {
+        return carts;
+    }
+
+    public void setCarts(List<CartEntity> carts) {
+        this.carts = carts;
+    }
+
+    public List<OrderEntity> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<OrderEntity> orders) {
+        this.orders = orders;
     }
 
     public List<RoleEntity> getRoles() {

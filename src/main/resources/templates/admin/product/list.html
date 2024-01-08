@@ -5,6 +5,23 @@
 <head>
     <title>Danh sách sản phẩm</title>
     <script th:inline="javascript">
+        var totalPages = [[${product.totalPage}]];
+		var currentPage = [[${product.page}]];
+		$(function () {
+	        window.pagObj = $('#pagination').twbsPagination({
+	            totalPages: totalPages,
+	            visiblePages: 10,
+	            startPage: currentPage,
+	            onPageClick: function (event, page) {
+	            	if (currentPage != page) {
+	            		$('#limit').val(2);
+						$('#page').val(page);
+						$('#formSubmit').submit();
+					}
+	            }
+	        });
+    	});
+
         function warningBeforeDelete(){
             swal({
               title: "Xác nhận xóa ?",
@@ -89,13 +106,13 @@
                                                 </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr th:each="product : ${products}">
-                                                        <td><input type="checkbox" id="${product.id}" th:value="${product.id}"></td>
-                                                        <td th:text="${product.name}"></td>
-                                                        <td th:text="${product.description}"></td>
-                                                        <td th:text="${product.cost}"></td>
+                                                    <tr th:each="item : ${product.listResult}">
+                                                        <td><input type="checkbox" id="${item.id}" th:value="${item.id}"></td>
+                                                        <td th:text="${item.name}"></td>
+                                                        <td th:text="${item.description}"></td>
+                                                        <td th:text="${item.cost}"></td>
                                                         <td>
-                                                            <a class="btn btn-sm btn-primary btn-edit" data-toggle="tooltip" title="Chỉnh sửa" th:href="@{/quan-tri/san-pham/chinh-sua(id=${product.id})}">
+                                                            <a class="btn btn-sm btn-primary btn-edit" data-toggle="tooltip" title="Chỉnh sửa" th:href="@{/quan-tri/san-pham/chinh-sua(id=${item.id})}">
                                                                 <i class="fa fa-pen-square" aria-hidden="true"></i>
                                                             </a>
                                                         </td>

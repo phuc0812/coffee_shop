@@ -1,6 +1,5 @@
 package com.blueeye.coffee_shop.controller;
 
-import com.blueeye.coffee_shop.dto.RegisterUser;
 import com.blueeye.coffee_shop.dto.UserDto;
 import com.blueeye.coffee_shop.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -32,7 +31,7 @@ public class RegisterController {
 
     @RequestMapping("/dang-ky")
     public String register(Model model){
-        RegisterUser ru = new RegisterUser();
+        UserDto ru = new UserDto();
         model.addAttribute("registerUser", ru);
         return "register";
     }
@@ -44,18 +43,18 @@ public class RegisterController {
     }
 
     @PostMapping("/dang-ky/process")
-    public String process(@Valid @ModelAttribute("registerUser") RegisterUser registerUser,
+    public String process(@Valid @ModelAttribute("registerUser") UserDto registerUser,
                           BindingResult result,
                           Model model,
                           HttpSession session){
-        String username = registerUser.getUsername();
         if(result.hasErrors()){
             return "register";
         }
 
+        String username = registerUser.getUsername();
         UserDto userExist = userService.findByName(username);
         if(userExist!=null){
-            model.addAttribute("registerUser", new RegisterUser());
+            model.addAttribute("registerUser", new UserDto());
             model.addAttribute("my_error", "Tài khoản đã tồn tại");
             return "register";
         }

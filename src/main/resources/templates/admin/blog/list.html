@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout/layoutOfAdmin}">
+<head>
+    <title>Danh sách bài viết</title>
+    <script th:inline="javascript">
+        var totalPages = [[${blog.totalPage}]];
+		var currentPage = [[${blog.page}]];
+		$(function () {
+	        window.pagObj = $('#pagination').twbsPagination({
+	            totalPages: totalPages,
+	            visiblePages: 10,
+	            startPage: currentPage,
+	            onPageClick: function (event, page) {
+	            	if (currentPage != page) {
+	            		$('#limit').val(2);
+						$('#page').val(page);
+						$('#formSubmit').submit();
+					}
+	            }
+	        });
+    	});
+    </script>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="main-content mt-3">
+            <form action="" id="formSubmit" method="get">
+                <div class="main-content-inner">
+                    <div class="page-content container">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <!--                                <c:if test="${not empty message}">-->
+                                <!--                                    <div class="alert alert-${alert}">-->
+                                <!--                                        ${message}-->
+                                <!--                                    </div>-->
+                                <!--                                </c:if>-->
+                                <div class="widget-box table-filter">
+                                    <div class="table-btn-controls">
+                                        <div class="pull-right tableTools-container" align="right">
+                                            <div class="dt-buttons btn-overlap btn-group">
+                                                <a flag="info"
+                                                   class="dt-button buttons-colvis btn btn-white btn-primary btn-bold" data-toggle="tooltip"
+                                                   title='Thêm bài viết' th:href="@{/quan-tri/bai-viet/them-moi}">
+                                                                <span>
+                                                                    <i class="fa fa-plus-circle bigger-110"></i>
+                                                                </span>
+                                                </a>
+                                                <button id="btnDelete" type="button" onclick="warningBeforeDelete()"
+                                                        class="dt-button buttons-html5 btn btn-white btn-primary btn-bold" data-toggle="tooltip" title='Xóa bài viết'>
+                                                                    <span>
+                                                                        <i class="fa fa-trash-alt bigger-110"></i>
+                                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th style="width:15%;"><input type="checkbox"> All</th>
+                                                    <th style="width:25%;">Tên bài viết</th>
+                                                    <th style="width:40%;">Mô tả bài viết</th>
+                                                    <th style="width:20%;">Thao tác</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="item : ${blog.listResult}">
+                                                    <td><input type="checkbox" id="${item.id}" th:value="${item.id}"></td>
+                                                    <td th:text="${item.title}"></td>
+                                                    <td th:text="${item.description}"></td>
+                                                    <td>
+                                                        <a class="btn btn-sm btn-primary btn-edit" data-toggle="tooltip" title="Chỉnh sửa" th:href="@{/quan-tri/bai-viet/chinh-sua(id=${item.id})}">
+                                                            <i class="fa fa-pen-square" aria-hidden="true"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            <ul class="pagination" id="pagination"></ul>
+                                            <input type="hidden" value="" id="page" name="page"/>
+                                            <input type="hidden" value="" id="limit" name="limit"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

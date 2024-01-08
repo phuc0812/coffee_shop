@@ -2,12 +2,13 @@ package com.blueeye.coffee_shop.dto;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AbstractDto <T>{
     private Long id;
-    private Timestamp createdDate;
-    private Timestamp modifiedDate;
+    private Date createdDate;
+    private Date modifiedDate;
     private String createdBy;
     private String modifiedBy;
     private long[] ids;
@@ -25,7 +26,7 @@ public class AbstractDto <T>{
     public AbstractDto() {
     }
 
-    public AbstractDto(Long id, Timestamp createdDate, Timestamp modifiedDate, String createdBy, String modifiedBy, long[] ids, List<T> listResult, Integer page, Integer limit, Integer totalPage, Integer totalItem, String sortName, String sortBy, String alert, String message, String type) {
+    public AbstractDto(Long id, Date createdDate, Date modifiedDate, String createdBy, String modifiedBy, long[] ids, List<T> listResult, Integer page, Integer limit, Integer totalPage, Integer totalItem, String sortName, String sortBy, String alert, String message, String type) {
         this.id = id;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
@@ -52,19 +53,19 @@ public class AbstractDto <T>{
         this.id = id;
     }
 
-    public Timestamp getCreatedDate() {
+    public Date getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Timestamp createdDate) {
+    public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
 
-    public Timestamp getModifiedDate() {
+    public Date getModifiedDate() {
         return modifiedDate;
     }
 
-    public void setModifiedDate(Timestamp modifiedDate) {
+    public void setModifiedDate(Date modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
 

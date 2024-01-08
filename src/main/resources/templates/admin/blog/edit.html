@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{admin/layout/layoutOfAdmin}">
+<head>
+    <title>Chỉnh sửa bài viết</title>
+    <script th:inline="javascript">
+        $(document).ready(function(){
+            var content;
+            ClassicEditor.create( document.querySelector( '#content' )).then(editor =>{content=editor;});
+            $("#add").click(function (e) {
+                e.preventDefault();
+                var data = {};
+                var id = $('#id').val();
+                var file = document.getElementById("thumbnail").files[0];
+                var formData = $("#formSubmit").serializeArray();
+                $.each(formData, function(i,v){
+                    data["" + v.name + ""] = v.value;
+                });
+                data["content"] = content.getData();
+                if(file==null){
+                    if(id==null){
+                        add(data);
+                    }else{
+                        update(data);
+                    }
+                }else{
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => {
+                        var thumbnail = reader.result;
+                        data["thumbnail"] = thumbnail;
+                        if(id==null){
+                            add(data);
+                        }else{
+                            update(data);
+                        }
+                    };
+                }
+            });
+
+            function add(data){
+                $.ajax({
+                    url: "/api/bai-viet",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    success: function (result) {
+                        window.location.href = "/quan-tri/bai-viet/chinh-sua?id="+result.id+"&message=insert_success";
+                    },
+                    error: function (error) {
+                        window.location.href = "/quan-tri/bai-viet/danh-sach?message=error_system";
+                    }
+                });
+            }
+
+            function update(data){
+                $.ajax({
+                    url: "/api/bai-viet",
+                    type: "PUT",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    success: function (result) {
+                        window.location.href = "/quan-tri/bai-viet/chinh-sua?id="+result.id+"&message=update_success";
+                    },
+                    error: function (error) {
+                        window.location.href = "/quan-tri/bai-viet/chinh-sua?id="+result.id+"&message=error_system";
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class = "container mt-3 mb-2">
+            <!--            <c:if test="${not empty message}">-->
+            <!--                <div class="alert alert-${alert}">-->
+            <!--                    ${message}-->
+            <!--                </div>-->
+            <!--            </c:if>-->
+            <form id="formSubmit" th:object="${blog}">
+                <div class="mb-3 row">
+                    <div class="col-sm-2" align="right">
+                        <label for="title" class="col-form-label" >Tên bài viết:</label>
+                    </div>
+                    <div class="col-sm-5">
+                        <input id="title" name="title" class="form-control col-xs-10 col-sm-5" th:field="*{title}"/>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-sm-2" align="right">
+                        <label for="thumbnail" class="col-form-label" >Ảnh bài viết:</label>
+                    </div>
+                    <div class="col-sm-5">
+                        <input type="file" class="form-control col-xs-10 col-sm-5" id="thumbnail" name="thumbnail">
+                        <span><img th:src="@{(${blog.thumbnail})}" width="480px" height="270px"></span>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-sm-2" align="right">
+                        <label for="description" class="col-form-label" >Mô tả bài viết:</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" rows="5" name="description" id="description" th:field="*{description}"></textarea>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-sm-2" align="right">
+                        <label for="content" class="col-form-label" >Nội dung bài viết:</label>
+                    </div>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" name="content" id="content" th:field="*{content}"></textarea>
+                    </div>
+                </div>
+                <input type="hidden" name="id" th:field="${blog.id}"/>
+                <div class="">
+                    <div class="ml-5 col-md-9">
+                        <span>
+                            <button class="btn btn-info" type="button" id="add" >
+                                <i class="ace-icon fa fa-check bigger-110"></i>
+                                <span th:if="${blog.id!=null}">Cập nhật bài viết</span>
+                                <span th:unless="${blog.id!=null}">Thêm mới bài viết</span>
+                            </button>
+                        </span>
+
+
+                        &nbsp; &nbsp; &nbsp;
+                        <button class="btn btn-secondary" type="reset">
+                            <i class="ace-icon fa fa-undo bigger-110"></i>
+                            Hủy
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

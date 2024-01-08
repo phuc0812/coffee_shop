@@ -1,9 +1,48 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
       layout:decorate="~{web/layout/layoutOfWeb}">
 <head>
     <title>Trang chủ</title>
+    <script th:inline="javascript">
+        $(document).ready(function(){
+            $("#add").click(function (e) {
+                var userId = $('#userId').val();
+                if(userId==null){
+                    swal({
+                          title: "Bạn chưa đăng nhập",
+                          confirmButtonClass: "btn-success",
+                          confirmButtonText: "OK",
+                    })
+                }else{
+                    e.preventDefault();
+                    var data = {};
+                    var formData = $("#formSubmit").serializeArray();
+                    $.each(formData, function(i,v){
+                        data["" + v.name + ""] = v.value;
+                    });
+                    add(data);
+                }
+            });
+
+            function add(data){
+                $.ajax({
+                    url: "/api/dat-ban",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    success: function (result) {
+                        window.location.href = "/thong-tin-dat-ban?id="+result.userId+"&message=insert_success";
+                    },
+                    error: function (error) {
+                        window.location.href = "/thong-tin-dat-ban?message=error_system";
+                    }
+                });
+            }
+        });
+    </script>
 </head>
 <body>
     <div layout:fragment="content">
@@ -17,7 +56,7 @@
                             <span class="subheading">Welcome</span>
                             <h1 class="mb-4">The Best Coffee Testing Experience</h1>
                             <p class="mb-4 mb-md-5">A small river named Duden flows by their place and supplies it with the necessary regelialia.</p>
-                            <p><a href="#" class="btn btn-primary p-3 px-xl-4 py-xl-3">Order Now</a> <a th:href="@{/thuc-don}" class="btn btn-white btn-outline-white p-3 px-xl-4 py-xl-3">View Menu</a></p>
+                            <p><a href="#" class="btn btn-primary p-3 px-xl-4 py-xl-3">Đặt bàn</a> <a th:href="@{/thuc-don}" class="btn btn-white btn-outline-white p-3 px-xl-4 py-xl-3">Thực đơn</a></p>
                         </div>
 
                     </div>
@@ -33,7 +72,7 @@
                             <span class="subheading">Welcome</span>
                             <h1 class="mb-4">Amazing Taste &amp; Beautiful Place</h1>
                             <p class="mb-4 mb-md-5">A small river named Duden flows by their place and supplies it with the necessary regelialia.</p>
-                            <p><a href="#" class="btn btn-primary p-3 px-xl-4 py-xl-3">Order Now</a> <a th:href="@{/thuc-don}" class="btn btn-white btn-outline-white p-3 px-xl-4 py-xl-3">View Menu</a></p>
+                            <p><a href="#" class="btn btn-primary p-3 px-xl-4 py-xl-3">Đặt bàn</a> <a th:href="@{/thuc-don}" class="btn btn-white btn-outline-white p-3 px-xl-4 py-xl-3">Thực đơn</a></p>
                         </div>
 
                     </div>
@@ -49,7 +88,7 @@
                             <span class="subheading">Welcome</span>
                             <h1 class="mb-4">Creamy Hot and Ready to Serve</h1>
                             <p class="mb-4 mb-md-5">A small river named Duden flows by their place and supplies it with the necessary regelialia.</p>
-                            <p><a href="#" class="btn btn-primary p-3 px-xl-4 py-xl-3">Order Now</a> <a th:href="@{/thuc-don}" class="btn btn-white btn-outline-white p-3 px-xl-4 py-xl-3">View Menu</a></p>
+                            <p><a href="#" class="btn btn-primary p-3 px-xl-4 py-xl-3">Đặt bàn</a> <a th:href="@{/thuc-don}" class="btn btn-white btn-outline-white p-3 px-xl-4 py-xl-3">Thực đơn</a></p>
                         </div>
 
                     </div>
@@ -86,39 +125,40 @@
                         </div>
                     </div>
                     <div class="book p-4">
-                        <h3>Book a Table</h3>
-                        <form action="#" class="appointment-form">
+                        <h3>Đặt bàn</h3>
+                        <form id="formSubmit" class="appointment-form" th:object="${order}">
                             <div class="d-md-flex">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="First Name">
+                                    <input type="text" name="firstName" id="firstName" class="form-control" placeholder="Tên" th:field="*{firstName}">
                                 </div>
                                 <div class="form-group ml-md-4">
-                                    <input type="text" class="form-control" placeholder="Last Name">
+                                    <input type="text" name="lastName" id="lastName" class="form-control" placeholder="Họ" th:field="*{lastName}">
                                 </div>
                             </div>
                             <div class="d-md-flex">
                                 <div class="form-group">
                                     <div class="input-wrap">
                                         <div class="icon"><span class="far fa-calendar-alt"></span></div>
-                                        <input type="text" class="form-control appointment_date" placeholder="Date">
+                                        <input type="text" name="date" id="date" class="form-control appointment_date" placeholder="Ngày" th:field="*{date}">
                                     </div>
                                 </div>
                                 <div class="form-group ml-md-4">
                                     <div class="input-wrap">
                                         <div class="icon"><span class="far fa-clock"></span></div>
-                                        <input type="text" class="form-control appointment_time" placeholder="Time">
+                                        <input type="text" name="time" id="time" class="form-control appointment_time" placeholder="Giờ" th:field="*{time}">
                                     </div>
                                 </div>
                                 <div class="form-group ml-md-4">
-                                    <input type="text" class="form-control" placeholder="Phone">
+                                    <input type="text" name="phone" id="phone" class="form-control" placeholder="Số điện thoại" th:field="*{phone}">
                                 </div>
                             </div>
+                            <input sec:authorize="isAuthenticated()" type="hidden" name="userId" id="userId" th:value="${#authentication.principal.id}">
                             <div class="d-md-flex">
                                 <div class="form-group">
-                                    <textarea name="" id="" cols="30" rows="2" class="form-control" placeholder="Message"></textarea>
+                                    <textarea name="message" id="message" cols="30" rows="2" class="form-control" placeholder="Lời nhắn" th:field="*{message}"></textarea>
                                 </div>
                                 <div class="form-group ml-md-4">
-                                    <input type="submit" value="Appointment" class="btn btn-white py-3 px-4">
+                                    <input type="button" id="add" value="Xác nhận" class="btn btn-white py-3 px-4">
                                 </div>
                             </div>
                         </form>

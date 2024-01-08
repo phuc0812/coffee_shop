@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{web/layout/layoutOfWeb}">
+<head>
+    <title>Chỉnh sửa thông tin</title>
+    <script th:inline="javascript">
+        $(document).ready(function(){
+            $("#submit").click(function (e) {
+                e.preventDefault();
+                var data = {};
+                var id = $('#id').val();
+                var file = document.getElementById("avatar").files[0];
+                var formData = $("#formSubmit").serializeArray();
+                $.each(formData, function(i,v){
+                    data["" + v.name + ""] = v.value;
+                });
+                if(file==null){
+                    update(data);
+                }else{
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => {
+                        var avatar = reader.result;
+                        data["avatar"] = avatar;
+                        update(data);
+                    };
+                }
+            });
+
+            function update(data){
+                $.ajax({
+                    url: "/api/user/thong-tin",
+                    type: "PUT",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    success: function (result) {
+                        window.location.href = "/thong-tin/chinh-sua?id="+result.id+"&message=update_success";
+                    },
+                    error: function (error) {
+                        window.location.href = "/thong-tin/chinh-sua?id="+result.id+"&message=error_system";
+                    }
+                });
+            }
+        });
+    </script>
+</head>
+<body>
+    <div layout:fragment="content">
+        <section class="ftco-section">
+            <div class="container">
+                <form id="formSubmit" th:object="${user}">
+                    <h3 class="mb-5" align="center">CHỈNH SỬA THÔNG TIN</h3>
+                    <div class="form-group">
+                        <label for="name" class="form-label">Name(*) :</label>
+                        <input type="text" class="form-control" name="name" id="name" th:field="*{name}"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="address" class="form-label">Address :</label>
+                        <input type="text" class="form-control" name="address" id="address" th:field="*{address}"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email(*) :</label>
+                        <input type="email" class="form-control" name="email" id="email" th:field="*{email}">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Phone :</label>
+                        <input type="text" class="form-control" name="phone" id="phone" th:field="*{phone}">
+                    </div>
+                    <div class="form-group">
+                        <label for="avatar" class="form-label">Ảnh đại diện :</label>
+                        <input type="file" class="form-control" name="avatar" id="avatar">
+                        <img width="480" th:src="${user.avatar}" alt="ảnh đại diện">
+                    </div>
+                    <input type="hidden" name="id" th:field="${user.id}">
+                    <div class="form-submit mt-5">
+                        <button type="button" class="btn btn-primary" name="submit" id="submit">Chỉnh sửa</button>
+                        <button type="reset" class="btn btn-secondary">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

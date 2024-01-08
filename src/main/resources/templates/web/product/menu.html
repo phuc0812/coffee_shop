@@ -1,9 +1,59 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml"
       layout:decorate="~{web/layout/layoutOfWeb}">
 <head>
     <title>Thực đơn</title>
+    <script th:inline="javascript">
+        $(document).ready(function(){
+            $('.minus').click(function(){
+                if($(this).next().val() > 0){
+                    $(this).next().val($(this).next().val() - 1);
+                }
+            });
+
+            $('.plus').click(function(){
+                $(this).prev().val(parseInt($(this).prev().val()) + 1);
+            });
+
+            $(".add").click(function (e) {
+                var userId = $('#userId').val();
+                if(userId==null){
+                    swal({
+                          title: "Bạn chưa đăng nhập",
+                          confirmButtonClass: "btn-success",
+                          confirmButtonText: "OK",
+                    })
+                }else{
+                    e.preventDefault();
+                    var data = {};
+                    var id = $(this).prev().val();
+                    var formData = $('#formSubmit_' + id).serializeArray();
+                    $.each(formData, function(i,v){
+                        data["" + v.name + ""] = v.value;
+                    });
+                    $.ajax({
+                        url: "/api/gio-hang",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        dataType: "json",
+                        success: function (result) {
+                            swal({
+                              title: "Thêm thành công",
+                              text: "Cảm ơn đã chọn sản phẩm",
+                              confirmButtonClass: "btn-success",
+                              confirmButtonText: "OK",
+                            }).then(function(isConfirm) {
+
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </head>
 <body>
     <div layout:fragment="content">
@@ -16,14 +66,21 @@
                         <th:block th:each="product : ${products}">
                             <th:block th:if="${product.classifyId == classify.id}">
                                 <div class="pricing-entry d-flex ftco-animate">
-<!--                                    <div class="img" th:style="background-image: url(' +@{web/images/dish-1.jpg} + ');'"></div>-->
+                                    <img class="img" th:src="@{(${product.thumbnail})}">
                                     <div class="desc pl-3">
                                         <div class="d-flex text align-items-center">
                                             <h3><span th:text="${product.name}"></span></h3>
                                             <span class="price" th:text="${product.cost}"></span>
                                         </div>
                                         <div class="d-block">
-                                            <p th:text="${product.description}"></p>
+                                            <form th:id="'formSubmit_' + ${product.id}" th:action="@{/api/gio-hang}">
+                                                <span class="fas fa-minus minus" th:id="'minus_' + ${product.id}" style="background:gray"></span>
+                                                <input class="ml-2" type="number" value="0" th:id="'quantity_' + ${product.id}" name="quantity">
+                                                <span class="fas fa-plus ml-2 plus" th:id="'plus_' + ${product.id}" style="background:gray"></span>
+                                                <input sec:authorize="isAuthenticated()" type="hidden" id="userId" name="userId" th:value="${#authentication.principal.id}">
+                                                <input type="hidden" name="productId" th:value="${product.id}">
+                                                <span class="ml-3 add"><button class="btn btn-secondary" type="button" th:id="'add_' + ${product.id}">Thêm vào giỏ hàng</button></span>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>

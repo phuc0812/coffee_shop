@@ -31,6 +31,12 @@
     <link rel="stylesheet" th:href="@{/web/css/style.css}">
 
     <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css}" />
+
+    <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
+
+    <!-- sweetalert -->
+    <script th:src="@{/common/sweetalert/sweetalert2.min.js}"></script>
+    <link th:href="@{/common/sweetalert/sweetalert2.min.css}" rel="stylesheet"/>
 </head>
 <body>
     <div th:replace="web/fragments/header::header"></div>
@@ -53,5 +59,6 @@
     <script th:src="@{https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false}"></script>
     <script th:src="@{/web/js/google-map.js}"></script>
     <script th:src="@{/web/js/main.js}"></script>
+    <script th:src="@{/web/paging/jquery.twbsPagination.js}"></script>
 </body>
 </html>

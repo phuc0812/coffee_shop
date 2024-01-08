@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{web/layout/layoutOfWeb}">
+<head>
+    <title>Giỏ hàng</title>
+    <script th:inline="javascript">
+        $(document).ready(function(){
+            $('.minus').click(function(){
+                if($(this).next().val() > 0){
+                    $(this).next().val($(this).next().val() - 1);
+                    var id = $(this).prev().val();
+                    var totalCost = $('#totalCost').text() - $('#cost_' + id).text();
+                    $('#totalCost').text(totalCost);
+                }
+            });
+
+            $('.plus').click(function(){
+                $(this).prev().val(parseInt($(this).prev().val()) + 1);
+                var id = $(this).next().val();
+                    var totalCost = parseInt($('#totalCost').text()) + parseInt($('#cost_' + id).text());
+                    $('#totalCost').text(totalCost);
+            });
+
+            $('.delete').click(function(){
+                var data = $(this).prev().val();
+                $.ajax({
+                    url: "/api/gio-hang",
+                    type: "DELETE",
+                    contentType: "application/json",
+                    data: JSON.stringify(data),
+                    success: function (result) {
+                        window.location.reload();
+                    }
+                });
+            });
+        });
+
+        function pay(){
+            swal({
+              title: "Thanh toán",
+              text: "Chức năng đang trong quá trình thử nghiệm",
+              showCancelButton: true,
+              confirmButtonClass: "btn-success",
+              cancelButtonClass: "btn-danger",
+              confirmButtonText: "Xác nhận",
+              cancelButtonText: "Hủy bỏ",
+            }).then(function(isConfirm) {
+              if (isConfirm) {
+                var totalCost = $('#totalCost').text();
+              }
+            });
+        }
+    </script>
+</head>
+<body>
+    <div layout:fragment="content">
+        <section class="ftco-section">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <th:block th:each="cart : ${carts}">
+                                <div class="pricing-entry d-flex ftco-animate">
+                                    <img class="img" th:src="@{(${cart.productThumbnail})}">
+                                    <div class="desc pl-3">
+                                        <div class="d-flex text align-items-center">
+                                            <h3><span th:text="${cart.productName}"></span></h3>
+                                            <span class="price" th:id="'cost_' + ${cart.id}" th:text="${cart.productCost}"></span>
+                                        </div>
+                                        <div class="d-block">
+                                            <form action="">
+                                                <input type="hidden" th:value="${cart.id}">
+                                                <span class="fas fa-minus minus" th:id="'minus_' + ${cart.id}" style="background:gray"></span>
+                                                <input class="ml-2" type="number" th:value="${cart.quantity}" th:id="'quantity_' + ${cart.id}">
+                                                <span class="fas fa-plus ml-2 plus" th:id="'plus_' + ${cart.id}" style="background:gray"></span>
+                                                <input type="hidden" th:value="${cart.id}">
+                                                <span class="delete" th:id="'delete_' + ${cart.id}"><i class="fas fa-trash-alt"></i></span>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th:block>
+                        </th:block>
+                    </div>
+                    <div class="col-md-6">
+                        <form action="#">
+                            <h4 class="mb-5 heading-pricing ftco-animate">Tổng tiền: <span th:text="${totalCost}" id="totalCost"></span></h4>
+                            <span><button class="btn btn-secondary ftco-animate" type="button" onclick="pay()">Thanh toán</button></span>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

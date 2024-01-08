@@ -1,9 +1,11 @@
 package com.blueeye.coffee_shop.service;
 
 import com.blueeye.coffee_shop.converter.UserConverter;
+import com.blueeye.coffee_shop.dto.MyUser;
 import com.blueeye.coffee_shop.dto.UserDto;
 import com.blueeye.coffee_shop.entity.RoleEntity;
 import com.blueeye.coffee_shop.entity.UserEntity;
+import com.blueeye.coffee_shop.repository.CartRepository;
 import com.blueeye.coffee_shop.repository.RoleRepository;
 import com.blueeye.coffee_shop.repository.UserRepository;
 import com.blueeye.coffee_shop.service.IService.IUserService;
@@ -24,13 +26,15 @@ import java.util.stream.Collectors;
 public class UserService implements IUserService{
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+    private CartRepository cartRepository;
     private UserConverter userConverter;
 
     @Autowired
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, UserConverter userConverter){
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, UserConverter userConverter, CartRepository cartRepository){
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userConverter = userConverter;
+        this.cartRepository = cartRepository;
     }
 
     @Override
@@ -68,12 +72,21 @@ public class UserService implements IUserService{
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDto findById(Long id) {
+        return userConverter.toDto(userRepository.findById(id).get());
+    }
+
+    @Override
+    public MyUser loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userRepository.findByUsername(username);
         if(user==null){
             throw new UsernameNotFoundException("Invalid username or password");
         }
-        return new User(user.getUsername(), user.getPassword(), rolesToAuthorities(user.getRoles()));
+        MyUser myUser = new MyUser(user.getUsername(), user.getPassword(), rolesToAuthorities(user.getRoles()));
+        myUser.setName(user.getName());
+        myUser.setId(user.getId());
+        myUser.setSizeCart(cartRepository.findAllByUserID(user.getId()).size());
+        return myUser;
     }
 
     private Collection<? extends GrantedAuthority> rolesToAuthorities(Collection<RoleEntity> roles){
